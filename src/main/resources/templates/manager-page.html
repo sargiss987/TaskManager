@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta th:name="_csrf" th:content="${_csrf.token}"/>
+    <meta th:name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>task-manager</title>
+    <link th:href="@{/styles/manager-page.css}" rel="stylesheet" />
+    <script type="text/javascript" th:src="@{/js/manager-page.js}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+<div class="main-container" id="mainContainer">
+    <div class="header">
+        <h1>Task Manager</h1>
+        <button th:onclick="createTask()">New Task</button>
+        <button th:onclick="logout()">Logout</button>
+    </div>
+    <div class="content">
+        <div class="filter">
+            <div class="filter_item">
+                <label>Users</label>
+                <input placeholder="Select an Option">
+            </div>
+            <div class="filter_item">
+                <label>Status</label>
+                <div>
+                    <select>
+                        <option>NEW_TASK</option>
+                        <option>BUG</option>
+                        <option>RE_OPEN</option>
+                        <option>RESOLVED</option>
+                        <option>DONE</option>
+                    </select>
+                </div>
+            </div>
+            <div class="filter_item">
+                <button>Filter</button>
+            </div>
+        </div>
+        <div class="tasks" th:object="${tasks}">
+            <table>
+                <thead>
+                  <tr>
+                      <th>Name</th>
+                      <th>Creation Date</th>
+                      <th>Update Date</th>
+                      <th>User</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody th:each="task: ${tasks}">
+                    <tr>
+                        <td th:text="${task.taskName}"></td>
+                        <td th:text="${task.createdAt}"></td>
+                        <td th:text="${task.updatedAt != null}? ${task.updatedAt} : 'not'"></td>
+                        <td th:text="${task.user.email}"></td>
+                        <td th:text="${task.taskStatus.statusType}"></td>
+                        <td style="display:none;" th:text="${task.id}" id="taskId"></td>
+                        <td>
+                            <button class="update-button" th:onclick="updateTask()">Update</button>
+                            <button class="delete-button" th:onclick="deleteTask($('#taskId').text())">Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

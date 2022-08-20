@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3307/task_manager_db?useSSL=false
+    username: task_manager
+    password: task_manager
+  jpa:
+    show-sql: true
+
+  flyway:
+    locations: "classpath:db/migration/{vendor}"
