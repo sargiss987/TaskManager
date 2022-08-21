@@ -20,12 +20,12 @@
         <div class="filter">
             <div class="filter_item">
                 <label>Users</label>
-                <input placeholder="Select an Option">
+                <input placeholder="Select an Option" id="email">
             </div>
             <div class="filter_item">
                 <label>Status</label>
                 <div>
-                    <select>
+                    <select id="status">
                         <option>NEW_TASK</option>
                         <option>BUG</option>
                         <option>RE_OPEN</option>
@@ -35,7 +35,7 @@
                 </div>
             </div>
             <div class="filter_item">
-                <button>Filter</button>
+                <button th:onclick="filterTasks($('#email').val(),$('#status').val())">Filter</button>
             </div>
         </div>
         <div class="tasks" th:object="${tasks}">
@@ -59,7 +59,7 @@
                         <td th:text="${task.taskStatus.statusType}"></td>
                         <td style="display:none;" th:text="${task.id}" id="taskId"></td>
                         <td>
-                            <button class="update-button" th:onclick="updateTask()">Update</button>
+                            <button class="update-button" th:onclick="updateTask($('#taskId').text())">Update</button>
                             <button class="delete-button" th:onclick="deleteTask($('#taskId').text())">Delete</button>
                         </td>
                     </tr>

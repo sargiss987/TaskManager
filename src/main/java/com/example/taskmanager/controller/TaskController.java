@@ -2,8 +2,10 @@ package com.example.taskmanager.controller;
 
 import static com.example.taskmanager.constants.Constants.CREATE_TASK_DTO;
 import static com.example.taskmanager.constants.Constants.TASKS;
+import static com.example.taskmanager.constants.Constants.UPDATE_TASK_DTO;
 
 import com.example.taskmanager.model.dto.CreateTaskDto;
+import com.example.taskmanager.model.dto.UpdateTaskDto;
 import com.example.taskmanager.model.entity.Task;
 import com.example.taskmanager.service.TaskService;
 import java.util.List;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -26,6 +29,16 @@ public class TaskController {
 
   public TaskController(TaskService taskService) {
     this.taskService = taskService;
+  }
+
+  @GetMapping("/filter")
+  public ModelAndView filterTasks(
+      @RequestParam(required = false) String email,
+      @RequestParam(required = false) String status,
+      Model model) {
+    List<Task> tasks = taskService.filterTasks(email, status);
+    model.addAttribute(model.addAttribute(TASKS, tasks));
+    return new ModelAndView("manager-page");
   }
 
   @GetMapping("/create")
@@ -42,14 +55,24 @@ public class TaskController {
     return new ModelAndView("manager-page", HttpStatus.CREATED);
   }
 
-  @GetMapping("/update")
-  public ModelAndView modifyTask(Model model) {
-    // TO: DO
+  @GetMapping("/update/{id}")
+  public ModelAndView getUpdateTaskPage(@PathVariable Long id, Model model) {
+    UpdateTaskDto updateTaskDto = taskService.getUpdateTaskDtoById(id);
+    model.addAttribute(UPDATE_TASK_DTO, updateTaskDto);
     return new ModelAndView("update-task-form");
   }
 
+  @PostMapping("/update/{id}")
+  public ModelAndView updateTask(@ModelAttribute UpdateTaskDto updateTaskDto, Model model) {
+    taskService.updateTask(updateTaskDto);
+    List<Task> tasks = taskService.getAllTasksByCreatedAtDesc();
+    model.addAttribute(model.addAttribute(TASKS, tasks));
+    model.addAttribute(UPDATE_TASK_DTO, updateTaskDto);
+    return new ModelAndView("manager-page");
+  }
+
   @DeleteMapping("/delete/{id}")
-  public ModelAndView deleteTask(@PathVariable Long id,Model model) {
+  public ModelAndView deleteTask(@PathVariable Long id, Model model) {
     taskService.deleteTask(id);
     List<Task> tasks = taskService.getAllTasksByCreatedAtDesc();
     model.addAttribute(model.addAttribute(TASKS, tasks));

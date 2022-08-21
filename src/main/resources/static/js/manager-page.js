@@ -14,6 +14,22 @@ function createTask(){
       });
 }
 
+function updateTask(id){
+    $(document).ready(function(){
+        $.get('/api/v1/tasks/update/' + id,function(data,status){
+            $("#mainContainer").html(data);
+        });
+      });
+}
+
+function filterTasks(email,status){
+    $(document).ready(function(){
+        $.get('/api/v1/tasks/filter',{email,status},function(data,status){
+            $("#mainContainer").html(data);
+        });
+      });
+}
+
 function deleteTask(id) {
     console.log(id);
     let csrfToken = $("meta[name='_csrf']").attr("content");
