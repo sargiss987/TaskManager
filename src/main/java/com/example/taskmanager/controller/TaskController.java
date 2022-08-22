@@ -4,15 +4,17 @@ import static com.example.taskmanager.constants.Constants.CREATE_TASK_DTO;
 import static com.example.taskmanager.constants.Constants.TASKS;
 import static com.example.taskmanager.constants.Constants.UPDATE_STATUS_DTO;
 import static com.example.taskmanager.constants.Constants.UPDATE_TASK_DTO;
+import static com.example.taskmanager.constants.Constants.VALIDATION_ERRORS;
 
 import com.example.taskmanager.model.dto.CreateTaskByEmployeeDto;
 import com.example.taskmanager.model.dto.CreateTaskByManagerDto;
 import com.example.taskmanager.model.dto.UpdateStatusDto;
 import com.example.taskmanager.model.dto.UpdateTaskDto;
 import com.example.taskmanager.model.entity.Task;
+import com.example.taskmanager.model.validation.ValidationErrors;
 import com.example.taskmanager.service.TaskService;
+import com.example.taskmanager.service.ValidationService;
 import java.util.List;
-import org.springframework.boot.Banner;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -31,9 +33,11 @@ import org.springframework.web.servlet.ModelAndView;
 public class TaskController {
 
   private final TaskService taskService;
+  private final ValidationService validationService;
 
-  public TaskController(TaskService taskService) {
+  public TaskController(TaskService taskService, ValidationService validationService) {
     this.taskService = taskService;
+    this.validationService = validationService;
   }
 
   @GetMapping("/manager/filter")
@@ -55,6 +59,11 @@ public class TaskController {
   @PostMapping("/manager/create")
   public ModelAndView managerPageCreateTask(
       @ModelAttribute CreateTaskByManagerDto createTaskDto, Model model) {
+    ValidationErrors validationErrors = validationService.validate(createTaskDto);
+    if (validationErrors.hasErrors()){
+      model.addAttribute(VALIDATION_ERRORS,validationErrors);
+      return new ModelAndView("create-task-form",HttpStatus.BAD_REQUEST);
+    }
     taskService.createTask(createTaskDto);
     List<Task> tasks = taskService.getAllTasksByCreatedAtDesc();
     model.addAttribute(model.addAttribute(TASKS, tasks));
@@ -110,6 +119,11 @@ public class TaskController {
   @PostMapping("/employee/create")
   public ModelAndView employeePageCreteTaskCreation(
       @ModelAttribute CreateTaskByEmployeeDto createTaskByEmployeeDto, Model model) {
+    ValidationErrors validationErrors = validationService.validate(createTaskByEmployeeDto);
+    if (validationErrors.hasErrors()){
+      model.addAttribute(VALIDATION_ERRORS,validationErrors);
+      return new ModelAndView("create-employee-task-form",HttpStatus.BAD_REQUEST);
+    }
     taskService.createTask(createTaskByEmployeeDto,getCurrentUsername());
     List<Task> tasks = taskService.getAllTasksByUserNameAndCreatedAtDesc(getCurrentUsername());
     model.addAttribute(TASKS, tasks);
