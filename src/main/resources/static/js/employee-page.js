@@ -16,6 +16,14 @@ function filterTasks(start,end,status){
       });
 }
 
+function createTask(){
+    $(document).ready(function(){
+        $.get('/api/v1/tasks/employee/create',function(data,status){
+            $("#mainContainer").html(data);
+        });
+      });
+}
+
 function updateTask(row){
     let id = row.find("td:eq(5)").text();
     $(document).ready(function(){

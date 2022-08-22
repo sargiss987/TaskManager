@@ -1,23 +1,21 @@
 package com.example.taskmanager.model.dto;
 
-import com.example.taskmanager.model.entity.User;
-
-public class CreateTaskDto {
+public class CreateTaskByManagerDto {
 
   private String taskName;
   private String taskDescription;
   private String userEmail;
 
-  public CreateTaskDto() {}
+  public CreateTaskByManagerDto() {}
 
-  public CreateTaskDto(String taskName, String taskDescription, String userEmail) {
+  public CreateTaskByManagerDto(String taskName, String taskDescription, String userEmail) {
     this.taskName = taskName;
     this.taskDescription = taskDescription;
     this.userEmail = userEmail;
   }
 
-  public static CreateTaskDto getInstance() {
-    return new CreateTaskDto();
+  public static CreateTaskByManagerDto getInstance() {
+    return new CreateTaskByManagerDto();
   }
 
   public String getTaskName() {

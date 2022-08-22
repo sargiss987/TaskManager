@@ -5,12 +5,14 @@ import static com.example.taskmanager.constants.Constants.TASKS;
 import static com.example.taskmanager.constants.Constants.UPDATE_STATUS_DTO;
 import static com.example.taskmanager.constants.Constants.UPDATE_TASK_DTO;
 
-import com.example.taskmanager.model.dto.CreateTaskDto;
+import com.example.taskmanager.model.dto.CreateTaskByEmployeeDto;
+import com.example.taskmanager.model.dto.CreateTaskByManagerDto;
 import com.example.taskmanager.model.dto.UpdateStatusDto;
 import com.example.taskmanager.model.dto.UpdateTaskDto;
 import com.example.taskmanager.model.entity.Task;
 import com.example.taskmanager.service.TaskService;
 import java.util.List;
+import org.springframework.boot.Banner;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -46,13 +48,13 @@ public class TaskController {
 
   @GetMapping("/manager/create")
   public ModelAndView getManagerPageTaskCreationForm(Model model) {
-    model.addAttribute(CREATE_TASK_DTO, CreateTaskDto.getInstance());
+    model.addAttribute(CREATE_TASK_DTO, CreateTaskByManagerDto.getInstance());
     return new ModelAndView("create-task-form");
   }
 
   @PostMapping("/manager/create")
   public ModelAndView managerPageCreateTask(
-      @ModelAttribute CreateTaskDto createTaskDto, Model model) {
+      @ModelAttribute CreateTaskByManagerDto createTaskDto, Model model) {
     taskService.createTask(createTaskDto);
     List<Task> tasks = taskService.getAllTasksByCreatedAtDesc();
     model.addAttribute(model.addAttribute(TASKS, tasks));
@@ -97,6 +99,21 @@ public class TaskController {
             startDate, endDate, status, getCurrentUsername());
     model.addAttribute(model.addAttribute(TASKS, tasks));
     return new ModelAndView("employee-page");
+  }
+
+  @GetMapping("/employee/create")
+  public ModelAndView getEmployeePageTaskCreationForm(Model model) {
+    model.addAttribute(CREATE_TASK_DTO, CreateTaskByEmployeeDto.getInstance());
+    return new ModelAndView("create-employee-task-form");
+  }
+
+  @PostMapping("/employee/create")
+  public ModelAndView employeePageCreteTaskCreation(
+      @ModelAttribute CreateTaskByEmployeeDto createTaskByEmployeeDto, Model model) {
+    taskService.createTask(createTaskByEmployeeDto,getCurrentUsername());
+    List<Task> tasks = taskService.getAllTasksByUserNameAndCreatedAtDesc(getCurrentUsername());
+    model.addAttribute(TASKS, tasks);
+    return new ModelAndView("employee-page",HttpStatus.CREATED);
   }
 
   @GetMapping("/employee/update/status/{id}")

@@ -1,6 +1,7 @@
 package com.example.taskmanager.service;
 
-import com.example.taskmanager.model.dto.CreateTaskDto;
+import com.example.taskmanager.model.dto.CreateTaskByEmployeeDto;
+import com.example.taskmanager.model.dto.CreateTaskByManagerDto;
 import com.example.taskmanager.model.dto.UpdateStatusDto;
 import com.example.taskmanager.model.dto.UpdateTaskDto;
 import com.example.taskmanager.model.entity.Task;
@@ -10,7 +11,9 @@ public interface TaskService {
 
     List<Task> getAllTasksByCreatedAtDesc();
 
-    Task createTask(CreateTaskDto createTaskDto);
+    Task createTask(CreateTaskByManagerDto createTaskDto);
+
+    Task createTask(CreateTaskByEmployeeDto createTaskByEmployeeDto, String currentUsername);
 
     void deleteTask(Long id);
 
@@ -29,4 +32,6 @@ public interface TaskService {
     UpdateStatusDto getUpdateStatusDtoById(Long id);
 
     void updateTaskStatus(UpdateStatusDto updateStatusDto);
+
+
 }

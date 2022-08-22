@@ -1,6 +1,7 @@
 package com.example.taskmanager.service.impl;
 
-import com.example.taskmanager.model.dto.CreateTaskDto;
+import com.example.taskmanager.model.dto.CreateTaskByEmployeeDto;
+import com.example.taskmanager.model.dto.CreateTaskByManagerDto;
 import com.example.taskmanager.model.dto.UpdateStatusDto;
 import com.example.taskmanager.model.dto.UpdateTaskDto;
 import com.example.taskmanager.model.entity.Task;
@@ -30,10 +31,21 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
-  public Task createTask(CreateTaskDto createTaskDto) {
+  public Task createTask(CreateTaskByManagerDto createTaskDto) {
     return userRepository
         .findByEmail(createTaskDto.getUserEmail())
         .map(user -> taskRepository.save(CreateTaskMapper.createTaskDtoToTask(createTaskDto, user)))
+        .orElseThrow(IllegalArgumentException::new);
+  }
+
+  @Override
+  public Task createTask(CreateTaskByEmployeeDto createTaskByEmployeeDto, String currentUsername) {
+    return userRepository
+        .findByEmail(currentUsername)
+        .map(
+            user ->
+                taskRepository.save(
+                    CreateTaskMapper.createTaskDtoToTask(createTaskByEmployeeDto, user)))
         .orElseThrow(IllegalArgumentException::new);
   }
 
@@ -83,7 +95,6 @@ public class TaskServiceImpl implements TaskService {
   @Override
   public List<Task> filterTasksByCreationDateAndStatus(
       String startDate, String endDate, String status, String email) {
-
     return taskRepository.filterTasksByCreationDateAndStatus(
         LocalDate.parse(startDate), LocalDate.parse(endDate), status, email);
   }
