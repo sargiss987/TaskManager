@@ -1,5 +1,6 @@
 package com.example.taskmanager.security;
 
+import com.example.taskmanager.model.enums.RoleType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,8 +13,12 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.authorizeRequests()
+        .antMatchers("/api/v1/tasks/manager/**")
+        .hasAuthority(RoleType.MANAGER.name())
+        .antMatchers("/api/v1/tasks/employee/**")
+        .hasAuthority(RoleType.EMPLOYEE.name())
         .antMatchers("*")
-        .authenticated()
+        .permitAll()
         .and()
         .formLogin()
         .loginPage("/login")

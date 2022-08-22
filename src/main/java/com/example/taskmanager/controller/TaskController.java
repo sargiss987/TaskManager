@@ -34,7 +34,7 @@ public class TaskController {
     this.taskService = taskService;
   }
 
-  @GetMapping("/filter")
+  @GetMapping("/manager/filter")
   public ModelAndView filterTasks(
       @RequestParam(required = false) String email,
       @RequestParam(required = false) String status,
@@ -44,13 +44,13 @@ public class TaskController {
     return new ModelAndView("manager-page");
   }
 
-  @GetMapping("/create")
+  @GetMapping("/manager/create")
   public ModelAndView getTaskCreationForm(Model model) {
     model.addAttribute(CREATE_TASK_DTO, CreateTaskDto.getInstance());
     return new ModelAndView("create-task-form");
   }
 
-  @PostMapping("/create")
+  @PostMapping("/manager/create")
   public ModelAndView createTask(@ModelAttribute CreateTaskDto createTaskDto, Model model) {
     taskService.createTask(createTaskDto);
     List<Task> tasks = taskService.getAllTasksByCreatedAtDesc();
@@ -58,14 +58,14 @@ public class TaskController {
     return new ModelAndView("manager-page", HttpStatus.CREATED);
   }
 
-  @GetMapping("/update/{id}")
+  @GetMapping("/manager/update/{id}")
   public ModelAndView getUpdateTaskPage(@PathVariable Long id, Model model) {
     UpdateTaskDto updateTaskDto = taskService.getUpdateTaskDtoById(id);
     model.addAttribute(UPDATE_TASK_DTO, updateTaskDto);
     return new ModelAndView("update-task-form");
   }
 
-  @PostMapping("/update/{id}")
+  @PostMapping("manager/update")
   public ModelAndView updateTask(@ModelAttribute UpdateTaskDto updateTaskDto, Model model) {
     taskService.updateTask(updateTaskDto);
     List<Task> tasks = taskService.getAllTasksByCreatedAtDesc();
@@ -74,7 +74,7 @@ public class TaskController {
     return new ModelAndView("manager-page");
   }
 
-  @DeleteMapping("/delete/{id}")
+  @DeleteMapping("/manager/delete/{id}")
   public ModelAndView deleteTask(@PathVariable Long id, Model model) {
     taskService.deleteTask(id);
     List<Task> tasks = taskService.getAllTasksByCreatedAtDesc();
@@ -82,7 +82,7 @@ public class TaskController {
     return new ModelAndView("manager-page");
   }
 
-  @GetMapping("/update/status/{id}")
+  @GetMapping("/employee/update/status/{id}")
   public ModelAndView getUpdateTaskStatusPage(@PathVariable Long id, Model model) {
     System.out.println(id);
     UpdateStatusDto updateTaskDto = taskService.getUpdateStatusDtoById(id);
@@ -90,7 +90,7 @@ public class TaskController {
     return new ModelAndView("update-status-form");
   }
 
-  @PostMapping("/update/status")
+  @PostMapping("/employee/update/status")
   public ModelAndView updateTaskStatus(
       @ModelAttribute UpdateStatusDto updateStatusDto, Model model) {
     System.out.println(updateStatusDto.getId());

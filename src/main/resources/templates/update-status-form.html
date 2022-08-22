@@ -12,7 +12,7 @@
     </div>
     <div class="content">
         <h1>Update Task Status</h1>
-        <form class="form-container" th:action="@{/api/v1/tasks/update/status}" th:object="${updateStatusDto}" th:method="post">
+        <form class="form-container" th:action="@{/api/v1/tasks/employee/update/status}" th:object="${updateStatusDto}" th:method="post">
             <div class="form-group" >
                 <input th:type="hidden" th:name="id" th:value="${updateStatusDto.id}">
             </div>

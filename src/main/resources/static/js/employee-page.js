@@ -6,10 +6,18 @@ $(document).ready(function(){
   });
 }
 
+function filterTasks(email,status){
+    $(document).ready(function(){
+        $.get('/api/v1/tasks/employee/filter',{email,status},function(data,status){
+            $("#mainContainer").html(data);
+        });
+      });
+}
+
 function updateTask(row){
     let id = row.find("td:eq(5)").text();
     $(document).ready(function(){
-        $.get('/api/v1/tasks/update/status/' + id,function(data,status){
+        $.get('/api/v1/tasks/employee/update/status/' + id,function(data,status){
             $("#mainContainer").html(data);
         });
       });

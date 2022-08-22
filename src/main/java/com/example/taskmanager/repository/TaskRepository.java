@@ -41,7 +41,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
               + " INNER JOIN task_manager_user tmu on t.task_manager_user_id=tmu.id"
               + " INNER JOIN task_status ts on t.task_status_id=ts.id"
               + " WHERE (LOWER(email) LIKE LOWER(CONCAT('%', :username, '%')))"
-              + " AND (ts.status_type= :status);",
+              + " AND ts.status_type= if(:status != 'ANY', :status, ts.status_type);",
       nativeQuery = true)
   List<Task> filterTasks(@Param("username") String username, @Param("status") String status);
 
