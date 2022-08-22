@@ -35,23 +35,24 @@ public class TaskController {
   }
 
   @GetMapping("/manager/filter")
-  public ModelAndView filterTasks(
+  public ModelAndView filterManagerPageTasks(
       @RequestParam(required = false) String email,
       @RequestParam(required = false) String status,
       Model model) {
-    List<Task> tasks = taskService.filterTasks(email, status);
+    List<Task> tasks = taskService.filterTasksByEmailAndStatus(email, status);
     model.addAttribute(model.addAttribute(TASKS, tasks));
     return new ModelAndView("manager-page");
   }
 
   @GetMapping("/manager/create")
-  public ModelAndView getTaskCreationForm(Model model) {
+  public ModelAndView getManagerPageTaskCreationForm(Model model) {
     model.addAttribute(CREATE_TASK_DTO, CreateTaskDto.getInstance());
     return new ModelAndView("create-task-form");
   }
 
   @PostMapping("/manager/create")
-  public ModelAndView createTask(@ModelAttribute CreateTaskDto createTaskDto, Model model) {
+  public ModelAndView managerPageCreateTask(
+      @ModelAttribute CreateTaskDto createTaskDto, Model model) {
     taskService.createTask(createTaskDto);
     List<Task> tasks = taskService.getAllTasksByCreatedAtDesc();
     model.addAttribute(model.addAttribute(TASKS, tasks));
@@ -59,14 +60,15 @@ public class TaskController {
   }
 
   @GetMapping("/manager/update/{id}")
-  public ModelAndView getUpdateTaskPage(@PathVariable Long id, Model model) {
+  public ModelAndView getUpdateTaskPageInManagerPage(@PathVariable Long id, Model model) {
     UpdateTaskDto updateTaskDto = taskService.getUpdateTaskDtoById(id);
     model.addAttribute(UPDATE_TASK_DTO, updateTaskDto);
     return new ModelAndView("update-task-form");
   }
 
   @PostMapping("manager/update")
-  public ModelAndView updateTask(@ModelAttribute UpdateTaskDto updateTaskDto, Model model) {
+  public ModelAndView updateTaskInManagerPage(
+      @ModelAttribute UpdateTaskDto updateTaskDto, Model model) {
     taskService.updateTask(updateTaskDto);
     List<Task> tasks = taskService.getAllTasksByCreatedAtDesc();
     model.addAttribute(model.addAttribute(TASKS, tasks));
@@ -82,25 +84,39 @@ public class TaskController {
     return new ModelAndView("manager-page");
   }
 
+  @GetMapping("/employee/filter")
+  public ModelAndView filterEmployeePageTasks(
+      @RequestParam(required = false) String startDate,
+      @RequestParam(required = false) String endDate,
+      @RequestParam(required = false) String status,
+      Model model) {
+    System.out.println(startDate);
+    System.out.println(endDate);
+    List<Task> tasks =
+        taskService.filterTasksByCreationDateAndStatus(
+            startDate, endDate, status, getCurrentUsername());
+    model.addAttribute(model.addAttribute(TASKS, tasks));
+    return new ModelAndView("employee-page");
+  }
+
   @GetMapping("/employee/update/status/{id}")
-  public ModelAndView getUpdateTaskStatusPage(@PathVariable Long id, Model model) {
-    System.out.println(id);
+  public ModelAndView getUpdateTaskStatusPageInEmployeePage(@PathVariable Long id, Model model) {
     UpdateStatusDto updateTaskDto = taskService.getUpdateStatusDtoById(id);
     model.addAttribute(UPDATE_STATUS_DTO, updateTaskDto);
     return new ModelAndView("update-status-form");
   }
 
   @PostMapping("/employee/update/status")
-  public ModelAndView updateTaskStatus(
+  public ModelAndView updateTaskStatusInEmployeePage(
       @ModelAttribute UpdateStatusDto updateStatusDto, Model model) {
     System.out.println(updateStatusDto.getId());
     taskService.updateTaskStatus(updateStatusDto);
     List<Task> tasks = taskService.getAllTasksByUserNameAndCreatedAtDesc(getCurrentUsername());
-    model.addAttribute(TASKS,tasks);
+    model.addAttribute(TASKS, tasks);
     return new ModelAndView("employee-page");
   }
 
-  private String getCurrentUsername(){
+  private String getCurrentUsername() {
     return SecurityContextHolder.getContext().getAuthentication().getName();
   }
 }

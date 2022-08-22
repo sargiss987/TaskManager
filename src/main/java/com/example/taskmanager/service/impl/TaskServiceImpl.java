@@ -9,6 +9,7 @@ import com.example.taskmanager.repository.UserRepository;
 import com.example.taskmanager.service.TaskService;
 import com.example.taskmanager.util.mapper.CreateTaskMapper;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
@@ -75,8 +76,16 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
-  public List<Task> filterTasks(String email, String status) {
-    return taskRepository.filterTasks(email, status);
+  public List<Task> filterTasksByEmailAndStatus(String email, String status) {
+    return taskRepository.filterTasksByEmailAndStatus(email, status);
+  }
+
+  @Override
+  public List<Task> filterTasksByCreationDateAndStatus(
+      String startDate, String endDate, String status, String email) {
+
+    return taskRepository.filterTasksByCreationDateAndStatus(
+        LocalDate.parse(startDate), LocalDate.parse(endDate), status, email);
   }
 
   @Override

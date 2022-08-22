@@ -20,7 +20,9 @@ public interface TaskService {
 
     void updateTask(UpdateTaskDto updateTaskDto);
 
-    List<Task> filterTasks(String email, String status);
+    List<Task> filterTasksByEmailAndStatus(String email, String status);
+
+    List<Task> filterTasksByCreationDateAndStatus(String startDate,String endDate, String status,String email);
 
     List<Task> getAllTasksByUserNameAndCreatedAtDesc(String email);
 

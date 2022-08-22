@@ -2,6 +2,7 @@ package com.example.taskmanager.repository;
 
 import com.example.taskmanager.model.entity.Task;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -43,7 +44,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
               + " WHERE (LOWER(email) LIKE LOWER(CONCAT('%', :username, '%')))"
               + " AND ts.status_type= if(:status != 'ANY', :status, ts.status_type);",
       nativeQuery = true)
-  List<Task> filterTasks(@Param("username") String username, @Param("status") String status);
+  List<Task> filterTasksByEmailAndStatus(
+      @Param("username") String username, @Param("status") String status);
 
   @Query(
       value =
@@ -66,4 +68,20 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
       nativeQuery = true)
   void updateTaskStatus(
       @Param("id") Long id, @Param("status") String status, @Param("updatedAt") Instant updatedAt);
+
+  @Transactional
+  @Query(
+      value =
+          "SELECT * FROM task t"
+              + " INNER JOIN task_status ts on t.task_status_id=ts.id"
+              + " INNER JOIN task_manager_user tmu on t.task_manager_user_id=tmu.id"
+              + " WHERE (t.task_creation_date >= :startDate) AND (t.task_creation_date <= :endDate)"
+              + " AND ts.status_type= if(:status != 'ANY', :status, ts.status_type)"
+              + " AND tmu.email= :username",
+      nativeQuery = true)
+  List<Task> filterTasksByCreationDateAndStatus(
+      @Param("startDate") LocalDate startDate,
+      @Param("endDate") LocalDate endDate,
+      @Param("status") String status,
+      @Param("username") String username);
 }

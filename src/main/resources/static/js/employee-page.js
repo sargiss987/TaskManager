@@ -6,9 +6,11 @@ $(document).ready(function(){
   });
 }
 
-function filterTasks(email,status){
+function filterTasks(start,end,status){
+    let startDate = start.val();
+    let endDate = end.val();
     $(document).ready(function(){
-        $.get('/api/v1/tasks/employee/filter',{email,status},function(data,status){
+        $.get('/api/v1/tasks/employee/filter',{startDate,endDate,status},function(data,status){
             $("#mainContainer").html(data);
         });
       });
