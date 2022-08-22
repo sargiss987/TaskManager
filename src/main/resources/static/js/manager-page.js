@@ -14,7 +14,8 @@ function createTask(){
       });
 }
 
-function updateTask(id){
+function updateTask(row){
+    let id = row.find("td:eq(5)").text();
     $(document).ready(function(){
         $.get('/api/v1/tasks/update/' + id,function(data,status){
             $("#mainContainer").html(data);
@@ -30,8 +31,8 @@ function filterTasks(email,status){
       });
 }
 
-function deleteTask(id) {
-    console.log(id);
+function deleteTask(row) {
+    let id = row.find("td:eq(5)").text();
     let csrfToken = $("meta[name='_csrf']").attr("content");
     let csrfHeader = $("meta[name='_csrf_header']").attr("content");
     $.ajax({

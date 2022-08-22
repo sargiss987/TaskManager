@@ -1,6 +1,7 @@
 package com.example.taskmanager.service.impl;
 
 import com.example.taskmanager.model.dto.CreateTaskDto;
+import com.example.taskmanager.model.dto.UpdateStatusDto;
 import com.example.taskmanager.model.dto.UpdateTaskDto;
 import com.example.taskmanager.model.entity.Task;
 import com.example.taskmanager.repository.TaskRepository;
@@ -53,6 +54,18 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
+  public UpdateStatusDto getUpdateStatusDtoById(Long id) {
+    Task task = getTaskById(id);
+    return new UpdateStatusDto(task.getId(), task.getTaskStatus().getStatusType());
+  }
+
+  @Override
+  public void updateTaskStatus(UpdateStatusDto updateStatusDto) {
+    taskRepository.updateTaskStatus(
+        updateStatusDto.getId(), updateStatusDto.getTaskStatus(), Instant.now());
+  }
+
+  @Override
   public void updateTask(UpdateTaskDto updateTaskDto) {
     taskRepository.updateTask(
         updateTaskDto.getId(),
@@ -64,5 +77,10 @@ public class TaskServiceImpl implements TaskService {
   @Override
   public List<Task> filterTasks(String email, String status) {
     return taskRepository.filterTasks(email, status);
+  }
+
+  @Override
+  public List<Task> getAllTasksByUserNameAndCreatedAtDesc(String email) {
+    return taskRepository.getAllTasksByUserNameAndCreatedAtDesc(email);
   }
 }

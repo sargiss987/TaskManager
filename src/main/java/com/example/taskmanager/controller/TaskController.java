@@ -2,14 +2,17 @@ package com.example.taskmanager.controller;
 
 import static com.example.taskmanager.constants.Constants.CREATE_TASK_DTO;
 import static com.example.taskmanager.constants.Constants.TASKS;
+import static com.example.taskmanager.constants.Constants.UPDATE_STATUS_DTO;
 import static com.example.taskmanager.constants.Constants.UPDATE_TASK_DTO;
 
 import com.example.taskmanager.model.dto.CreateTaskDto;
+import com.example.taskmanager.model.dto.UpdateStatusDto;
 import com.example.taskmanager.model.dto.UpdateTaskDto;
 import com.example.taskmanager.model.entity.Task;
 import com.example.taskmanager.service.TaskService;
 import java.util.List;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -77,5 +80,27 @@ public class TaskController {
     List<Task> tasks = taskService.getAllTasksByCreatedAtDesc();
     model.addAttribute(model.addAttribute(TASKS, tasks));
     return new ModelAndView("manager-page");
+  }
+
+  @GetMapping("/update/status/{id}")
+  public ModelAndView getUpdateTaskStatusPage(@PathVariable Long id, Model model) {
+    System.out.println(id);
+    UpdateStatusDto updateTaskDto = taskService.getUpdateStatusDtoById(id);
+    model.addAttribute(UPDATE_STATUS_DTO, updateTaskDto);
+    return new ModelAndView("update-status-form");
+  }
+
+  @PostMapping("/update/status")
+  public ModelAndView updateTaskStatus(
+      @ModelAttribute UpdateStatusDto updateStatusDto, Model model) {
+    System.out.println(updateStatusDto.getId());
+    taskService.updateTaskStatus(updateStatusDto);
+    List<Task> tasks = taskService.getAllTasksByUserNameAndCreatedAtDesc(getCurrentUsername());
+    model.addAttribute(TASKS,tasks);
+    return new ModelAndView("employee-page");
+  }
+
+  private String getCurrentUsername(){
+    return SecurityContextHolder.getContext().getAuthentication().getName();
   }
 }

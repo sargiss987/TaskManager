@@ -44,6 +44,8 @@ public class AuthenticationController {
             model.addAttribute(TASKS,tasks);
             return new ModelAndView("manager-page");
         }else {
+            List<Task> tasks = taskService.getAllTasksByUserNameAndCreatedAtDesc(userLoginDto.getEmail());
+            model.addAttribute(TASKS,tasks);
             return new ModelAndView("employee-page");
         }
 

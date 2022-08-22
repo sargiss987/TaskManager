@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>task-manager</title>
+    <link th:href="@{/styles/form.css}" rel="stylesheet" />
+</head>
+<body>
+<div class="main-container">
+    <div class="header">
+        <h1>Task Manager</h1>
+    </div>
+    <div class="content">
+        <h1>Update Task Status</h1>
+        <form class="form-container" th:action="@{/api/v1/tasks/update/status}" th:object="${updateStatusDto}" th:method="post">
+            <div class="form-group" >
+                <input th:type="hidden" th:name="id" th:value="${updateStatusDto.id}">
+            </div>
+            <div class="form-group">
+                <label>Task Status</label>
+                <select th:name="taskStatus" th:value="${updateStatusDto.taskStatus}">
+                    <option>NEW_TASK</option>
+                    <option>BUG</option>
+                    <option>RESOLVED</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <button type="submit">Update</button>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,6 +1,7 @@
 package com.example.taskmanager.service;
 
 import com.example.taskmanager.model.dto.CreateTaskDto;
+import com.example.taskmanager.model.dto.UpdateStatusDto;
 import com.example.taskmanager.model.dto.UpdateTaskDto;
 import com.example.taskmanager.model.entity.Task;
 import java.util.List;
@@ -20,4 +21,10 @@ public interface TaskService {
     void updateTask(UpdateTaskDto updateTaskDto);
 
     List<Task> filterTasks(String email, String status);
+
+    List<Task> getAllTasksByUserNameAndCreatedAtDesc(String email);
+
+    UpdateStatusDto getUpdateStatusDtoById(Long id);
+
+    void updateTaskStatus(UpdateStatusDto updateStatusDto);
 }

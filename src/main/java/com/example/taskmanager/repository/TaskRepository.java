@@ -44,4 +44,26 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
               + " AND (ts.status_type= :status);",
       nativeQuery = true)
   List<Task> filterTasks(@Param("username") String username, @Param("status") String status);
+
+  @Query(
+      value =
+          "SELECT * FROM task t"
+              + " INNER JOIN task_manager_user tmu on t.task_manager_user_id=tmu.id"
+              + " WHERE (tmu.email = :username)"
+              + " ORDER BY t.task_creation_date DESC;",
+      nativeQuery = true)
+  List<Task> getAllTasksByUserNameAndCreatedAtDesc(@Param("username") String username);
+
+  @Modifying
+  @Transactional
+  @Query(
+      value =
+          "UPDATE task t"
+              + " INNER JOIN task_status ts on ts.status_type=:status SET"
+              + " task_update_date = :updatedAt,"
+              + " task_status_id = ifNull(ts.id, task_status_id)"
+              + " WHERE t.id=:id",
+      nativeQuery = true)
+  void updateTaskStatus(
+      @Param("id") Long id, @Param("status") String status, @Param("updatedAt") Instant updatedAt);
 }

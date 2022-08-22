@@ -9,6 +9,7 @@ public final class Constants {
   public static final String TASKS = "tasks";
   public static final String CREATE_TASK_DTO = "createTaskDto";
   public static final String UPDATE_TASK_DTO = "updateTaskDto";
+  public static final String UPDATE_STATUS_DTO = "updateStatusDto";
 
   private Constants() {}
 }
